@@ -1,0 +1,54 @@
+version: '3'
+
+networks:
+  default:
+
+services:
+  nginx:
+    container_name: pf-vs-2020-nginx
+    image: nginx:stable-alpine
+    ports:
+      - 127.0.0.1:80:80
+    volumes:
+      - .:/var/www:delegated
+      - ./.docker/conf/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - php
+      - mysql
+    networks:
+      - default
+
+  php:
+    container_name: pf-vs-2020-php
+    build:
+      context: .docker/images/php
+      dockerfile: Dockerfile
+    volumes:
+      - .:/var/www:delegated
+    ports:
+      - 127.0.0.1:9000:9000
+    networks:
+      - default
+    working_dir: /var/www
+
+  mysql:
+    container_name: pf-vs-2020-mysql
+    image: mysql:5.7.31
+    restart: unless-stopped
+    ports:
+      - 127.0.0.1:3306:3306
+    environment:
+      MYSQL_HOST: localhost
+      MYSQL_DATABASE: pf_vs_2020
+      MYSQL_USER: pf_vs_2020
+      MYSQL_PASSWORD: pf_vs_2020
+      MYSQL_ROOT_PASSWORD: pf_vs_2020
+      SERVICE_TAGS: dev
+      SERVICE_NAME: mysql
+    networks:
+      - default
+    volumes:
+      - mysql:/var/lib/mysql:delegated
+
+volumes:
+  mysql:
