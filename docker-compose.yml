@@ -1,8 +1,5 @@
 version: '3'
 
-networks:
-  default:
-
 services:
   nginx:
     container_name: pf-vs-2020-nginx
