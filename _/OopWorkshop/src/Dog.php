@@ -1,5 +1,5 @@
 <?php
-require_once 'ChasingBirds.php';
+namespace PF;
 
 class Dog extends Animal
 {

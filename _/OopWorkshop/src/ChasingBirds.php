@@ -1,5 +1,5 @@
 <?php
-
+namespace PF;
 
 trait ChasingBirds
 {

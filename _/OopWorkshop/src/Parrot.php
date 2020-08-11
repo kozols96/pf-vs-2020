@@ -1,5 +1,5 @@
 <?php
-
+namespace PF;
 
 class Parrot extends Animal implements Flyable
 {

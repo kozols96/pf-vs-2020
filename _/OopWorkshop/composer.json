@@ -1,5 +1,10 @@
 {
     "name": "root/oop-workshop",
     "type": "project",
-    "require": {}
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "PF\\": "src"
+        }
+    }
 }

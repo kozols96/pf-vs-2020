@@ -1,5 +1,5 @@
 <?php
-
+namespace PF;
 
 class Plane implements Flyable
 {

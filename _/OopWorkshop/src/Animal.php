@@ -1,5 +1,5 @@
 <?php
-
+namespace PF;
 
 abstract class Animal
 {

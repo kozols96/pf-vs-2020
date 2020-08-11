@@ -1,5 +1,5 @@
 <?php
-
+namespace PF;
 
 interface Flyable
 {
