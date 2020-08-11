@@ -37,3 +37,10 @@ class C extends A {
 
 var_dump(B::foo());
 var_dump(C::foo());
+
+function foo(): void
+{
+
+
+}
+
