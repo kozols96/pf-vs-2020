@@ -51,18 +51,17 @@ class BowlingGameTest extends \PHPUnit\Framework\TestCase
 
     public function testGetScore_withAStrike_returnScoreWithStrikeBonus()
     {
-       $game = new BowlingGame();
+        $game = new BowlingGame();
+        $game->throw(10);
+        $game->throw(4);
+        $game->throw(4);
 
-       $game->throw(10);
-       $game->throw(4);
-       $game->throw(4);
-
-       for ($i = 0; $i < 16; $i++) {
-           $game->throw(1);
-       }
-       // 10 + 4 + 4 + 4 + 4 + 16 = 42
+        for ($i = 0; $i < 16; $i++) {
+            $game->throw(1);
+        }
+        // 10 + 4 + 4 + 4 + 4 + 16 = 42
 
         $result = $game->getScore();
-       self::assertEquals(42, $result);
+        self::assertEquals(42, $result);
     }
 }

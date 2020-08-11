@@ -3,6 +3,7 @@
 
 class BowlingGame
 {
+    const All = 10;
     private array $throws = [];
 
     public function throw(int $points): void
@@ -15,10 +16,10 @@ class BowlingGame
         $score = 0;
         $throw = 0;
 
-        for ($i = 0; $i < 10; $i++) {
+        for ($i = 0; $i < self::All; $i++) {
 
             if ($this->isAStrike($throw)) {
-                $score += $this->getStrikeScore($throw);
+                $score += $this->getStrikeBonus($throw);
                 $throw += 1;
                 continue;
             }
@@ -35,12 +36,21 @@ class BowlingGame
     }
 
     /**
-     * @param int $i
-     * @return mixed
+     * @param int $throw
+     * @return bool
      */
-    public function getFrameScore(int $i)
+    public function isAStrike(int $throw): bool
     {
-        return $this->throws[$i] + $this->throws[$i + 1];
+        return $this->throws[$throw] === self::All;
+    }
+
+    /**
+     * @param int $throw
+     * @return int|mixed
+     */
+    public function getStrikeBonus(int $throw): int
+    {
+        return self::All + $this->throws[$throw + 1] + $this->throws[$throw + 2];
     }
 
     /**
@@ -49,11 +59,11 @@ class BowlingGame
      */
     public function isASpare(int $i): bool
     {
-        return $this->getFrameScore($i) === 10;
+        return $this->getFrameScore($i) === self::All;
     }
 
     /**
-     * @param int $i
+     * @param int $throw
      * @return mixed
      */
     public function getSpareBonus(int $throw): int
@@ -62,20 +72,11 @@ class BowlingGame
     }
 
     /**
-     * @param int $throw
-     * @return bool
+     * @param int $i
+     * @return mixed
      */
-    public function isAStrike(int $throw): bool
+    public function getFrameScore(int $i): int
     {
-        return $this->throws[$throw] === 10;
-    }
-
-    /**
-     * @param int $throw
-     * @return int|mixed
-     */
-    public function getStrikeScore(int $throw)
-    {
-        return 10 + $this->throws[$throw + 1] + $this->throws[$throw + 2];
+        return $this->throws[$i] + $this->throws[$i + 1];
     }
 }
