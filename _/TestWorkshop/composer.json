@@ -1,0 +1,7 @@
+{
+    "name": "root/test-workshop",
+    "type": "project",
+    "require": {
+        "phpunit/phpunit": "^9.3"
+    }
+}
