@@ -42,3 +42,31 @@ var_dump(usort($arr, function(Person $person1, Person $person2) {
 }));
 
 var_dump(usort($arr, fn(Person $person1, Person $person2) => $person1->getName() > $person2->getName()));
+
+
+//Unit testing
+class Fooo
+{
+    private UserRepo $userRepo;
+
+    /**
+     * Fooo constructor.
+     */
+    public function __construct(UserRepo $userRepo)
+    {
+        $this->userRepo = $userRepo;
+    }
+
+    public function bar()
+    {
+        $this->userRepo->selectUser();
+    }
+}
+
+class UserRepo
+{
+    public function selectUser()
+    {
+        // select * from users where id = 1
+    }
+}
