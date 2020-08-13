@@ -64,7 +64,7 @@ class Lexer
      * the getErrors() method.
      *
      * @param string $code The source code to lex
-     * @param ErrorHandler|null $errorHandler Error handler to use for lexing errors. Defaults to
+     * @param ErrorHandler|null $errorHandler error handler to use for lexing errors. Defaults to
      *                                        ErrorHandler\Throwing
      */
     public function startLexing(string $code, ErrorHandler $errorHandler = null) {

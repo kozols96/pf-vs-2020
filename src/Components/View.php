@@ -15,6 +15,13 @@ class View
     public const LAYOUT_DEFAULT = 'default';
 
     /**
+     * @var string  Included view content
+     */
+    protected string $content = '';
+
+    protected string $title = 'Default title';
+
+    /**
      * View constructor.
      * @param string $layoutName
      * @param string $viewName
@@ -33,6 +40,9 @@ class View
      */
     public function render(): string
     {
+
+        $this->content = $this->renderViewContent();
+
         $layoutViewPath = $this->resolveLayoutFilePath();
 
         ob_start();

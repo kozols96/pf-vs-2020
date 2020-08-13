@@ -109,9 +109,9 @@ abstract class ParserAbstract implements Parser
     /** @var array Start attributes of last *read* token */
     protected $lookaheadStartAttributes;
 
-    /** @var ErrorHandler Error handler */
+    /** @var ErrorHandler error handler */
     protected $errorHandler;
-    /** @var int Error state, used to avoid error floods */
+    /** @var int error state, used to avoid error floods */
     protected $errorState;
 
     /**
@@ -145,7 +145,7 @@ abstract class ParserAbstract implements Parser
      * occurred and attempt to build a partial AST.
      *
      * @param string $code The source code to parse
-     * @param ErrorHandler|null $errorHandler Error handler to use for lexer/parser errors, defaults
+     * @param ErrorHandler|null $errorHandler error handler to use for lexer/parser errors, defaults
      *                                        to ErrorHandler\Throwing.
      *
      * @return Node\Stmt[]|null Array of statements (or null non-throwing error handler is used and

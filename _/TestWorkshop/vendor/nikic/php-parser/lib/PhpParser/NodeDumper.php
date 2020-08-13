@@ -187,7 +187,7 @@ class NodeDumper
         return "[$start - $end]";
     }
 
-    // Copied from Error class
+    // Copied from error class
     private function toColumn($code, $pos) {
         if ($pos > strlen($code)) {
             throw new \RuntimeException('Invalid position information');

@@ -7,8 +7,8 @@ use Project\Components\View;
  * @var array $array
  */
 
-$this->title = 'Index page';
+$this->title = 'Login page';
 
 ?>
 
-Index page
+Login Page

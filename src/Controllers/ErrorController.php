@@ -10,6 +10,6 @@ class ErrorController extends Controller
 
     public function notFound(): string
     {
-        return '404 not found';
+        return $this->view('error/404');
     }
 }

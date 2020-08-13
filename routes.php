@@ -6,5 +6,6 @@ use Project\Controllers\IndexController;
 
 return [
     '/' => new Route(IndexController::class, 'index'),
-    '/auth/login' => new Route(AuthController::class, 'login'),
+    '/login' => new Route(AuthController::class, 'login'),
+    '/sign-up' => new Route(AuthController::class, 'register'),
 ];

@@ -32,7 +32,7 @@ class NameResolver extends NodeVisitorAbstract
      *    resolvedName attribute is added. (Names that cannot be statically resolved receive a
      *    namespacedName attribute, as usual.)
      *
-     * @param ErrorHandler|null $errorHandler Error handler
+     * @param ErrorHandler|null $errorHandler error handler
      * @param array $options Options
      */
     public function __construct(ErrorHandler $errorHandler = null, array $options = []) {

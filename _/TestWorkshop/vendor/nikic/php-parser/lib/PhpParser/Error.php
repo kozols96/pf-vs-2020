@@ -10,7 +10,7 @@ class Error extends \RuntimeException
     /**
      * Creates an Exception signifying a parse error.
      *
-     * @param string    $message    Error message
+     * @param string    $message    error message
      * @param array|int $attributes Attributes of node/token where error occurred
      *                              (or start line of error -- deprecated)
      */
@@ -27,7 +27,7 @@ class Error extends \RuntimeException
     /**
      * Gets the error message
      *
-     * @return string Error message
+     * @return string error message
      */
     public function getRawMessage() : string {
         return $this->rawMessage;
@@ -36,7 +36,7 @@ class Error extends \RuntimeException
     /**
      * Gets the line the error starts in.
      *
-     * @return int Error start line
+     * @return int error start line
      */
     public function getStartLine() : int {
         return $this->attributes['startLine'] ?? -1;
@@ -45,7 +45,7 @@ class Error extends \RuntimeException
     /**
      * Gets the line the error ends in.
      *
-     * @return int Error end line
+     * @return int error end line
      */
     public function getEndLine() : int {
         return $this->attributes['endLine'] ?? -1;
@@ -73,7 +73,7 @@ class Error extends \RuntimeException
     /**
      * Sets the line of the PHP file the error occurred in.
      *
-     * @param string $message Error message
+     * @param string $message error message
      */
     public function setRawMessage(string $message) {
         $this->rawMessage = $message;
@@ -83,7 +83,7 @@ class Error extends \RuntimeException
     /**
      * Sets the line the error starts in.
      *
-     * @param int $line Error start line
+     * @param int $line error start line
      */
     public function setStartLine(int $line) {
         $this->attributes['startLine'] = $line;
@@ -109,7 +109,7 @@ class Error extends \RuntimeException
      */
     public function getStartColumn(string $code) : int {
         if (!$this->hasColumnInfo()) {
-            throw new \RuntimeException('Error does not have column information');
+            throw new \RuntimeException('error does not have column information');
         }
 
         return $this->toColumn($code, $this->attributes['startFilePos']);
@@ -123,7 +123,7 @@ class Error extends \RuntimeException
      */
     public function getEndColumn(string $code) : int {
         if (!$this->hasColumnInfo()) {
-            throw new \RuntimeException('Error does not have column information');
+            throw new \RuntimeException('error does not have column information');
         }
 
         return $this->toColumn($code, $this->attributes['endFilePos']);

@@ -8,7 +8,7 @@ interface Parser
      * Parses PHP code into a node tree.
      *
      * @param string $code The source code to parse
-     * @param ErrorHandler|null $errorHandler Error handler to use for lexer/parser errors, defaults
+     * @param ErrorHandler|null $errorHandler error handler to use for lexer/parser errors, defaults
      *                                        to ErrorHandler\Throwing.
      *
      * @return Node\Stmt[]|null Array of statements (or null non-throwing error handler is used and

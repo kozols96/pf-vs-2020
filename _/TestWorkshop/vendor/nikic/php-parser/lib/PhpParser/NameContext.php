@@ -17,13 +17,13 @@ class NameContext
     /** @var Name[][] Same as $aliases but preserving original case */
     protected $origAliases = [];
 
-    /** @var ErrorHandler Error handler */
+    /** @var ErrorHandler error handler */
     protected $errorHandler;
 
     /**
      * Create a name context.
      *
-     * @param ErrorHandler $errorHandler Error handling used to report errors
+     * @param ErrorHandler $errorHandler error handling used to report errors
      */
     public function __construct(ErrorHandler $errorHandler) {
         $this->errorHandler = $errorHandler;

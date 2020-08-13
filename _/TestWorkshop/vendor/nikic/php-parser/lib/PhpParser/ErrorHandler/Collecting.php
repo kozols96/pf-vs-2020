@@ -6,7 +6,7 @@ use PhpParser\Error;
 use PhpParser\ErrorHandler;
 
 /**
- * Error handler that collects all errors into an array.
+ * error handler that collects all errors into an array.
  *
  * This allows graceful handling of errors.
  */

@@ -636,7 +636,7 @@ final class TestRunner extends BaseTestRunner
         $result->beStrictAboutResourceUsageDuringSmallTests($arguments['beStrictAboutResourceUsageDuringSmallTests']);
 
         if ($arguments['enforceTimeLimit'] === true && !(new Invoker)->canInvokeWithTimeout()) {
-            $this->writeMessage('Error', 'PHP extension pcntl is required for enforcing time limits');
+            $this->writeMessage('error', 'PHP extension pcntl is required for enforcing time limits');
         }
 
         $result->enforceTimeLimit($arguments['enforceTimeLimit']);
