@@ -4,16 +4,16 @@ declare(strict_types=1);
 namespace Project\Services;
 
 use Project\Models\UserModel;
+use Project\Structures\UserRegisterItem;
 
 class UserService
 {
-    public function signUp(string $email, string $name): UserModel
+    public function signUp(UserRegisterItem $item): UserModel
     {
+        var_dump($item);
+
         // TODO implement
         $user = new UserModel();
-
-        $user->name = $name;
-        $user->email = $email;
 
         return $user;
     }

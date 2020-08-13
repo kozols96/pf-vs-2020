@@ -5,13 +5,15 @@ namespace Project\Models;
 
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * @property int $id
- * @property string $name
  * @property string $email
+ * @property string $password
+ * @property string $name
+ * @property string $created_at
+ * @property string $updated_at
  *
  * @property UserQuizAttemptModel[] $userQuizAttempts
  */
