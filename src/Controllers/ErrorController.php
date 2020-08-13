@@ -3,8 +3,9 @@
 
 namespace Project\Controllers;
 
+use Project\Components\Controller;
 
-class ErrorController
+class ErrorController extends Controller
 {
 
     public function notFound(): string

@@ -4,6 +4,7 @@
 namespace Project\Components;
 
 
+use mysql_xdevapi\Exception;
 use Project\Controllers\ErrorController;
 
 class Router
@@ -24,9 +25,17 @@ class Router
         $this->path = $path;
     }
 
+    /**
+     * @throws Exception
+     */
     public function resolve(): void
     {
         $route = $this->routes[$this->path] ?? new Route(ErrorController::class, 'notFound');
+
+        if (!method_exists($route->getControllerClass(), $route->getAction())) {
+            throw new Exception("Action '{$route->getAction()}' 
+            not found in '{$route->getControllerClass()}'");
+        }
 
         echo call_user_func([$route->getControllerClass(), $route->getAction()]);
     }
