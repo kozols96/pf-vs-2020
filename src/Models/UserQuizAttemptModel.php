@@ -10,35 +10,33 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * @property int $id
+ * @property int $user_id
  * @property int $quiz_id
- * @property string $title
+ * @property string $started_at
+ * @property string $finished_at
  *
+ * @property UserModel $user
  * @property QuizModel $quiz
- *
- * @property AnswerModel[] $answers
  * @property UserQuizAttemptAnswerModel[] $userAnswers
  */
-class QuestionModel extends Model
+class UserQuizAttemptModel extends Model
 {
-
-    protected $table = 'questions';
+    protected $table = 'user_quiz_attempts';
     public $timestamps = false;
     protected $guarded = [];
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(UserModel::class);
+    }
 
     public function quiz(): BelongsTo
     {
         return $this->belongsTo(QuizModel::class);
     }
 
-    public function answers(): HasMany
-    {
-        return $this->hasMany(AnswerModel::class, 'question_id','id');
-    }
-
     public function userAnswers(): HasMany
     {
-        return $this->hasMany(UserQuizAttemptAnswerModel::class, 'question_id', 'id');
+        return $this->hasMany(UserQuizAttemptAnswerModel::class);
     }
-
-
 }

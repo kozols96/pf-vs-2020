@@ -1,5 +1,7 @@
 .idea
 vendor
+.env
+pf-vs-2020
 
 _/OopWorkshop/vendor
 _/TestWorkdhop/vendor
