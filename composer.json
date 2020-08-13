@@ -5,7 +5,8 @@
     "robmorgan/phinx": "^0.12.3",
     "vlucas/phpdotenv": "^5.1",
     "fzaninotto/faker": "^1.9",
-    "ext-mysql_xdevapi": "*"
+    "ext-mysql_xdevapi": "*",
+    "ext-json": "*"
   },
   "require-dev": {
     "phpunit/phpunit": "^9.3.5"

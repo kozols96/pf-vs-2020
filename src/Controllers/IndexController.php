@@ -10,6 +10,6 @@ class IndexController extends Controller
 
     public function index(): string
     {
-        return 'Hello world!';
+        return $this->view('index');
     }
 }

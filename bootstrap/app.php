@@ -3,6 +3,9 @@
 use Dotenv\Dotenv;
 use Illuminate\Database\Capsule\Manager as Capsule;
 
+defined('PROJECT_ROOT') or define('PROJECT_ROOT', dirname(__DIR__));
+defined('PROJECT_VIEW_DIR') or define('PROJECT_VIEW_DIR', PROJECT_ROOT . '/resources/views');
+
 Dotenv::createImmutable(dirname(__DIR__))->load();
 
 $capsule = new Capsule();
