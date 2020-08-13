@@ -10,6 +10,6 @@ abstract class Controller
     {
         // TODO: Creates new View class, collects data, returns view
 
-        return (new View($name, $data, 'layout'))->render();
+        return (new View($name, $data))->render();
     }
 }

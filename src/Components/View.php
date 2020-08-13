@@ -3,7 +3,6 @@
 
 namespace Project\Components;
 
-
 use Exception;
 
 class View
@@ -11,7 +10,9 @@ class View
 
     private string $viewName;
     private array $data;
-    private string $layoutName = '';
+    private string $layoutName;
+
+    public const LAYOUT_DEFAULT = 'default';
 
     /**
      * View constructor.
@@ -19,33 +20,75 @@ class View
      * @param string $viewName
      * @param array $data
      */
-    public function __construct(string $viewName, array $data, string $layoutName)
+    public function __construct(string $viewName, array $data, string $layoutName = self::LAYOUT_DEFAULT)
     {
         $this->viewName = $viewName;
         $this->data = $data;
         $this->layoutName = $layoutName;
     }
 
-
+    /**
+     * @return string
+     * @throws Exception
+     */
     public function render(): string
     {
-        $filePath = $this->resolveFilePath();
+        $layoutViewPath = $this->resolveLayoutFilePath();
+
+        ob_start();
+
+        include $layoutViewPath;
+
+        return ob_get_clean();
+    }
+
+    /**
+     * @return string
+     * @throws Exception
+     */
+    private function renderViewContent(): string
+    {
+        $viewFilePath = $this->resolveViewFilePath();
 
         extract($this->data);
 
         ob_start();
-        include $filePath;
-        $content = ob_get_clean();
 
-        return $content;
+        include $viewFilePath;
+
+        return ob_get_clean();
     }
 
-    private function resolveFilePath(): string
+    /**
+     * @return string
+     * @throws Exception
+     */
+    private function resolveLayoutFilePath(): string
     {
-        $filePath = PROJECT_VIEW_DIR . '/' . $this->viewName . '.php';
+        return $this->resolveFilePath(PROJECT_LAYOUT_DIR,$this->layoutName);
+    }
 
-        if (!$this->viewName || !file_exists($filePath)) {
-            throw new Exception ("View '{$this->viewName}' not found");
+    /**
+     * @return string
+     * @throws Exception
+     */
+    private function resolveViewFilePath(): string
+    {
+        return $this->resolveFilePath(PROJECT_VIEW_DIR, $this->viewName);
+    }
+
+    /**
+     * @param string $fileDirectory
+     * @param string $fileName
+     * @return string
+     * @throws Exception
+     */
+    private function resolveFilePath(string $fileDirectory, string $fileName): string
+    {
+        $filePath = "$fileDirectory/$fileName.php";
+
+        if (!$fileName || !file_exists($filePath)) {
+            throw new Exception ("View '{$fileName}' not found");
         }
 
         return $filePath;
