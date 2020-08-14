@@ -28,24 +28,34 @@ use Project\Components\View;
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav">
-            <?php if(ActiveUser::isLoggedIn()): ?>
-            <li class="nav-item">
-                <a class="nav-link" href="/dashboard">Dashboard</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="/logout"
-                   onclick="onLogoutClicked()">Logout</a>
-            </li>
+            <?php if (ActiveUser::isLoggedIn()): ?>
+                <li class="nav-item">
+                    <a class="nav-link" href="/dashboard">Dashboard</a>
+                </li>
 
-            <form id="js--logout-form" action="/logout" method="post">
-            </form>
+                <?php if (ActiveUser::getUser()->is_admin): ?>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin">Admin</a>
+                    </li>
+                <?php endif; ?>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="/logout"
+                       onclick="onLogoutClicked()">Logout</a>
+                </li>
+
+                <form id="js--logout-form" action="/logout" method="post">
+                </form>
+
             <?php else: ?>
-            <li class="nav-item">
-                <a class="nav-link" href="/login">Login</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="/sign-up">Register</a>
-            </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="/login">Login</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/sign-up">Register</a>
+                </li>
+
             <?php endif; ?>
         </ul>
     </div>
@@ -53,7 +63,7 @@ use Project\Components\View;
 
 <div class="container">
 
-<?= $this->content ?>
+    <?= $this->content ?>
 
 </div>
 

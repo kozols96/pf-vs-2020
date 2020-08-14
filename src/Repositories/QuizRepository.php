@@ -13,4 +13,9 @@ class QuizRepository
     {
         return null;
     }
+
+    public function getAll()
+    {
+        return QuizModel::all()->all();
+    }
 }

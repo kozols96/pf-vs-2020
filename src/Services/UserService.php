@@ -4,9 +4,11 @@ declare(strict_types=1);
 namespace Project\Services;
 
 use Project\Components\Session;
+use Project\Exceptions\UserLoginException;
 use Project\Exceptions\UserRegistrationValidationException;
 use Project\Models\UserModel;
 use Project\Repositories\UserRepository;
+use Project\Structures\UserLoginItem;
 use Project\Structures\UserRegisterItem;
 
 class UserService
@@ -50,6 +52,10 @@ class UserService
         return $user;
     }
 
+    /**
+     * @param UserRegisterItem $item
+     * @throws UserRegistrationValidationException
+     */
     private function validateRegisterItemOrFail(UserRegisterItem $item): void
     {
 
@@ -90,33 +96,38 @@ class UserService
         }
     }
 
-    public function signIn(string $email, string $name): ?UserModel
+
+    /**
+     * @param UserLoginItem $loginItem
+     * @return UserModel|null
+     * @throws UserLoginException
+     */
+    public function signIn(UserLoginItem $loginItem): ?UserModel
     {
         // TODO implement
-        return null;
-    }
 
-    public function validateLoginItemOrFail(UserRegisterItem $item): void
-    {
+        if(!$loginItem->email || !$loginItem->password) {
+            throw new UserLoginException();
+        }
 
-        $errors = [];
+        $user = $this->userRepository->getUserByEmail($loginItem->email);
 
-        if (!$item->email) {
+        if (!$user) {
 
-            $errors[] = 'Please enter your email!';
+            throw new UserLoginException();
 
         }
 
-        if (!filter_var($item->email, FILTER_VALIDATE_EMAIL)) {
+        if (!password_verify($loginItem->password, $user->password)) {
 
-            $errors[] = 'Please enter a valid email';
-
-        } elseif (!$this->userRepository->checkIsEmailRegistered($item->email)) {
-
-            $errors[] = 'User with this email is already registered!';
+            throw new UserLoginException();
 
         }
 
+        $this->session->regenerate();
+        $this->session->set(Session::KEY_USER_ID, (int)$user->id);
+
+        return $user;
     }
 
     public function signOut(): void

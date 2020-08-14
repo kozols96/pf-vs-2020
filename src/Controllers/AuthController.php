@@ -5,8 +5,10 @@ namespace Project\Controllers;
 
 use Project\Components\ActiveUser;
 use Project\Components\Controller;
+use Project\Exceptions\UserLoginException;
 use Project\Exceptions\UserRegistrationValidationException;
 use Project\Services\UserService;
+use Project\Structures\UserLoginItem;
 use Project\Structures\UserRegisterItem;
 
 class AuthController extends Controller
@@ -27,12 +29,24 @@ class AuthController extends Controller
     public function login(): string
     {
 
-
         if (ActiveUser::isLoggedIn()) {
             return $this->redirect('/dashboard');
         }
 
-        return $this->view('login');
+        $loginItem = UserLoginItem::fromArray($_POST);
+        $error = "";
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            try {
+                $this->userService->signIn($loginItem);
+
+                return $this->redirect('/dashboard');
+            } catch (UserLoginException $exception) {
+                $error = "Email or password is invalid";
+            }
+        }
+
+        return $this->view('login', ['loginItem' => $loginItem, 'error' => $error]);
     }
 
     public function register(): ?string

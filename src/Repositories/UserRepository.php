@@ -14,10 +14,21 @@ class UserRepository
         return UserModel::query()->where('email', '=', $email)->exists();
     }
 
+    public function getUserByEmail(string $email): ?UserModel
+    {
+        /** @noinspection PhpIncompatibleReturnTypeInspection */
+        return UserModel::query()->where('email', '=', $email)->first();
+    }
+
     public function saveModel(UserModel $user): UserModel
     {
         $user->save();
 
         return $user;
+    }
+
+    public function getAll()
+    {
+        return UserModel::all()->all();
     }
 }

@@ -18,10 +18,11 @@ $this->title = 'Register';
 <div class ="alert alert-danger" role="alert">
     <ul class="mb-0">
         <?php foreach ($errors as $error): ?>
-            <li><?= htmlspecialchars($error) ?></li>
+            <li><?= e($error) ?></li>
         <?php endforeach; ?>
     </ul>
 </div>
+
 <?php endif;?>
 
 <form action="/sign-up" method="post">
