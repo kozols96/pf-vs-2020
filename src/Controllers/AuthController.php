@@ -3,7 +3,9 @@
 
 namespace Project\Controllers;
 
+use Project\Components\ActiveUser;
 use Project\Components\Controller;
+use Project\Exceptions\UserRegistrationValidationException;
 use Project\Services\UserService;
 use Project\Structures\UserRegisterItem;
 
@@ -24,24 +26,55 @@ class AuthController extends Controller
 
     public function login(): string
     {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            var_dump($_POST);
+
+
+        if (ActiveUser::isLoggedIn()) {
+            return $this->redirect('/dashboard');
         }
 
         return $this->view('login');
     }
 
-    public function register(): string
+    public function register(): ?string
     {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $this->userService->signUp(UserRegisterItem::fromArray($_POST));
+
+        $registerItem = UserRegisterItem::fromArray($_POST);
+        $errors = [];
+
+        if (ActiveUser::isLoggedIn()) {
+            return $this->redirect('/dashboard');
         }
 
-        return $this->view('register');
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+            try {
+                $this->userService->signUp($registerItem);
+
+                return $this->redirect('/');
+            } catch (UserRegistrationValidationException $exception) {
+                $errors = $exception->errorMessages;
+            }
+        }
+
+        return $this->view('register', ['registerItem' => $registerItem, 'errors' => $errors]);
     }
 
     public function logout(): string
     {
-        return 'logout';
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+
+            return $this->redirect('/');
+
+        }
+
+        if (!ActiveUser::isLoggedIn()) {
+
+            return $this->redirect('/login');
+
+        }
+
+        $this->userService->signOut();
+
+        return $this->redirect('/');
     }
 }

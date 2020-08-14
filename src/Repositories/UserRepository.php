@@ -8,14 +8,16 @@ use Project\Models\UserModel;
 
 class UserRepository
 {
-    public function addUser(string $name, string $email): UserModel
+
+    public function checkIsEmailRegistered(string $email): bool
     {
-        // TODO implement
+        return UserModel::query()->where('email', '=', $email)->exists();
     }
 
-    public function getUser(string $email): ?UserModel
+    public function saveModel(UserModel $user): UserModel
     {
-        // TODO implement
-        return null;
+        $user->save();
+
+        return $user;
     }
 }
