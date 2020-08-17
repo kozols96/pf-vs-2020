@@ -29,6 +29,7 @@ use Project\Components\View;
     <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav">
             <?php if (ActiveUser::isLoggedIn()): ?>
+
                 <li class="nav-item">
                     <a class="nav-link" href="/dashboard">Dashboard</a>
                 </li>
@@ -52,6 +53,7 @@ use Project\Components\View;
                 <li class="nav-item">
                     <a class="nav-link" href="/login">Login</a>
                 </li>
+
                 <li class="nav-item">
                     <a class="nav-link" href="/sign-up">Register</a>
                 </li>
@@ -62,17 +64,13 @@ use Project\Components\View;
 </nav>
 
 <div class="container">
-
     <?= $this->content ?>
-
 </div>
 
 <script>
-
     function onLogoutClicked() {
         event.preventDefault();
         document.getElementById('js--logout-form').submit();
     }
-
-</script
+</script>
 </body>

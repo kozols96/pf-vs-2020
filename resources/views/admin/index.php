@@ -26,12 +26,38 @@ $this->title = 'Admin panel';
     </thead>
     <tbody>
     <?php foreach ($users as $user): ?>
-        <tr>
-            <td><?= $user->id; ?></td>
-            <td><?= e($user->email); ?></td>
-            <td><?= e($user->name); ?></td>
-            <td><?= $user->created_at; ?></td>
-        </tr>
+        <?php if (!$user->is_admin): ?>
+            <tr>
+                <td><?= $user->id; ?></td>
+                <td><?= e($user->email); ?></td>
+                <td><?= e($user->name); ?></td>
+                <td><?= $user->created_at; ?></td>
+            </tr>
+        <?php endif; ?>
+    <?php endforeach; ?>
+    </tbody>
+</table>
+
+<h2>All admin users</h2>
+<table class="table">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Email</th>
+        <th>Name</th>
+        <th>Joined at</th>
+    </tr>
+    </thead>
+    <tbody>
+    <?php foreach ($users as $user): ?>
+        <?php if ($user->is_admin): ?>
+            <tr>
+                <td><?= $user->id; ?></td>
+                <td><?= e($user->email); ?></td>
+                <td><?= e($user->name); ?></td>
+                <td><?= $user->created_at; ?></td>
+            </tr>
+        <?php endif; ?>
     <?php endforeach; ?>
     </tbody>
 </table>
@@ -39,6 +65,7 @@ $this->title = 'Admin panel';
 <h2>All quizzes</h2>
 <table class="table">
     <thead>
+
     <tr>
         <th>ID</th>
         <th>Name</th>
