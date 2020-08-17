@@ -1,5 +1,6 @@
 <?php
 
+use Project\Components\Session;
 use Project\Components\View;
 use Project\Structures\UserRegisterItem;
 
@@ -28,6 +29,9 @@ $this->title = 'Register';
 <form action="/sign-up" method="post">
     <div class="form-group">
         <label for="inputName">Name</label>
+        <input type="hidden"
+               name="csrf"
+        value="<?=e(Session::getInstance()->getCsrf())?>">
         <input
                 type="text"
                 name="name"

@@ -1,5 +1,6 @@
 <?php
 
+use Project\Components\Session;
 use Project\Components\View;
 use Project\Structures\UserLoginItem;
 
@@ -22,6 +23,7 @@ $this->title = 'Login';
 <?php endif;?>
 
 <form action="/login" method="post">
+    <input type="hidden" name="csrf" value="<?= e(Session::getInstance()->getCsrf())?>">
     <div class="form-group">
         <label for="exampleInputEmail1">Email address</label>
         <input type="email"

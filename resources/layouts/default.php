@@ -1,6 +1,7 @@
 <?php
 
 use Project\Components\ActiveUser;
+use Project\Components\Session;
 use Project\Components\View;
 
 /**
@@ -15,6 +16,7 @@ use Project\Components\View;
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
           integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z"
           crossorigin="anonymous">
+    <link rel="stylesheet" href="/assets/style.css">
 </head>
 <body>
 <nav class="navbar navbar-expand-sm navbar-light bg-light">
@@ -46,6 +48,7 @@ use Project\Components\View;
                 </li>
 
                 <form id="js--logout-form" action="/logout" method="post">
+                    <input type="hidden" name="csrf" value="<?= e(Session::getInstance()->getCsrf()) ?>">
                 </form>
 
             <?php else: ?>
@@ -63,7 +66,19 @@ use Project\Components\View;
     </div>
 </nav>
 
+
 <div class="container">
+    <?php if (Session::getInstance()->hasSuccessMessage()): ?>
+        <div class="alert alert-success">
+            <?= e(Session::getInstance()->getSuccessMessage()) ?>
+        </div>
+    <?php endif; ?>
+
+    <?php if (Session::getInstance()->hasErrorMessage()): ?>
+        <div class="alert alert-danger">
+            <?= e(Session::getInstance()->getErrorMessage()) ?>
+        </div>
+    <?php endif; ?>
     <?= $this->content ?>
 </div>
 
@@ -73,4 +88,5 @@ use Project\Components\View;
         document.getElementById('js--logout-form').submit();
     }
 </script>
+<script src="/assets/script.js"></script>
 </body>
