@@ -107,7 +107,7 @@ class AdminController extends Controller
      */
     public function deleteUser(): ?string
     {
-        if (ActiveUser::getUser()->is_admin) {
+        if (!ActiveUser::getUser()->is_admin) {
             throw new HttpForbiddenException();
         }
         $id = (int)($_POST['id'] ?? null);

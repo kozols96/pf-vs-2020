@@ -115,8 +115,8 @@ window.alert("Success");
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /mnt/c/users/karli/documents/projects/pf-vs-2020/resources/js/app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! /mnt/c/users/karli/documents/projects/pf-vs-2020/resources/styles/app.scss */"./resources/styles/app.scss");
+__webpack_require__(/*! /mnt/c/pf-vs-2020/resources/js/app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! /mnt/c/pf-vs-2020/resources/styles/app.scss */"./resources/styles/app.scss");
 
 
 /***/ })
