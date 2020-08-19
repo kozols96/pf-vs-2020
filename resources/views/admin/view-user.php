@@ -9,15 +9,16 @@ use Project\Structures\UserLoginItem;
 /**
  * @var View $this
  * @var UserModel $user
- * @var UserLoginItem $loginItem
  */
+
+$this->title = 'User: ' . e($user->name);
 
 ?>
 
 <h3 class="mt-3">
-    <?= $user->name; ?>
+    <?= e($user->name); ?>
 
-    <?php if (ActiveUser::getUserId() == $user->id): ?>
+    <?php if (ActiveUser::getUserId() == e($user->id)): ?>
     <div class="badge badge-success">
         It's you!
     </div>
@@ -53,7 +54,7 @@ use Project\Structures\UserLoginItem;
 <h4>Danger zone:</h4>
 
 <form action="/admin/delete-user" method="post">
-    <input type="hidden" name="id" value="<?= $user->id ?>">
+    <input type="text" name="id" value="<?= $user->id ?>">
     <input type="hidden" name="csrf" value="<?= Session::getInstance()->getCsrf() ?>">
     <?php if (ActiveUser::isLoggedIn()): ?>
     <button type="submit" class="btn btn-danger">

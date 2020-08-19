@@ -19,7 +19,6 @@ final class CreateTableQuizzes extends AbstractMigration
             ->addColumn('id', Column::INTEGER, ['identity' => true, 'signed' => false])
             ->addColumn('name', Column::STRING, ['limit' => 64])
             ->create();
-
     }
 
     public function down(): void

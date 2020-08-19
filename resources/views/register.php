@@ -38,7 +38,7 @@ $this->title = 'Register';
                 class="form-control"
                 id="exampleInputEmail1"
                 placeholder="Enter name"
-                value="<?= htmlspecialchars($registerItem->name); ?>">
+                value="<?= e($registerItem->name); ?>">
     </div>
     <div class="form-group">
         <label for="inputEmail1">Email address</label>
@@ -48,7 +48,7 @@ $this->title = 'Register';
                id="exampleInputEmail1"
                aria-describedby="emailHelp"
                placeholder="Enter email"
-               value="<?= htmlspecialchars($registerItem->email); ?>"
+               value="<?= e($registerItem->email); ?>"
         >
         <small id="emailHelp" class="form-text text-muted">
             We will always share your email with anyone else.

@@ -3,6 +3,7 @@ vendor
 .env
 pf-vs-2020
 node_modules
+public/assets
 
 _/OopWorkshop/vendor
 _/TestWorkdhop/vendor

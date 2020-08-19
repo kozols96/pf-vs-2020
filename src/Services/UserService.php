@@ -3,7 +3,9 @@ declare(strict_types=1);
 
 namespace Project\Services;
 
+use Project\Components\ActiveUser;
 use Project\Components\Session;
+use Project\Exceptions\AdminValidationException;
 use Project\Exceptions\UserLoginException;
 use Project\Exceptions\UserRegistrationValidationException;
 use Project\Models\UserModel;
@@ -20,8 +22,8 @@ class UserService
 
     /**
      * UserService constructor.
-     * @param UserRepository $userRepository
-     * @param Session $session
+     * @param UserRepository|null $userRepository
+     * @param Session|null $session
      */
     public function __construct(UserRepository $userRepository = null, Session $session = null)
     {
@@ -96,6 +98,74 @@ class UserService
         }
     }
 
+    /**
+     * @param int $id
+     * @return bool
+     */
+    public function isSelectedUserActiveUserForToggle(int $id)
+    {
+
+        try {
+            $this->validateSelectedUserForToggle($id);
+        } catch (AdminValidationException $exception) {
+            Session::getInstance()->setErrorMessage($exception->getMessage());
+        }
+        return ActiveUser::getUserId() === $id;
+    }
+
+    /**
+     * @param int $id
+     * @return bool
+     */
+    public function isSelectedUserActiveUserForDelete(int $id)
+    {
+
+        try {
+            $this->validateSelectedUserForDelete($id);
+        } catch (AdminValidationException $exception) {
+            Session::getInstance()->setErrorMessage($exception->getMessage());
+        }
+        return ActiveUser::getUserId() === $id;
+    }
+
+    /**
+     * @param int $id
+     * @return bool
+     * @throws AdminValidationException
+     */
+    public function validateSelectedUserForToggle(int $id)
+    {
+
+        $isSelectedUserActiveUser = ActiveUser::getUserId() === $id;
+
+        if ($isSelectedUserActiveUser === true) {
+
+            throw new AdminValidationException("You can't toggle yourself");
+        }
+
+        return true;
+
+    }
+
+    /**
+     * @param int $id
+     * @return bool
+     * @throws AdminValidationException
+     */
+    public function validateSelectedUserForDelete(int $id)
+    {
+
+        $isSelectedUserActiveUser = ActiveUser::getUserId() === $id;
+
+        if ($isSelectedUserActiveUser === true) {
+
+            throw new AdminValidationException("You can't delete yourself");
+        }
+
+        return true;
+
+    }
+
 
     /**
      * @param UserLoginItem $loginItem
@@ -106,7 +176,7 @@ class UserService
     {
         // TODO implement
 
-        if(!$loginItem->email || !$loginItem->password) {
+        if (!$loginItem->email || !$loginItem->password) {
             throw new UserLoginException();
         }
 
@@ -132,6 +202,31 @@ class UserService
 
     public function signOut(): void
     {
+
         $this->session->destroy();
+    }
+
+    /**
+     * @param int $id
+     * @return UserModel|null
+     */
+    public function getUser(int $id): ?UserModel
+    {
+
+        return $this->userRepository->getUserById($id);
+    }
+
+    /**
+     * @param int $id
+     * @return UserModel
+     */
+    public function deleteUser(int $id): UserModel
+    {
+        $user = $this->userRepository->getUserById($id);
+        $user->email = null;
+        $user->password = null;
+        $user->name = 'Former user';
+
+        return $this->userRepository->saveModel($user);
     }
 }
