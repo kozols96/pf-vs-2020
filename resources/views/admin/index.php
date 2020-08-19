@@ -1,6 +1,5 @@
 <?php
 
-use Project\Components\Session;
 use Project\Components\View;
 use Project\Models\QuizModel;
 use Project\Models\UserModel;

@@ -13,4 +13,11 @@ class QuizRepository
     {
         return QuizModel::all()->all();
     }
+
+    public function getById(int $quizId): ?QuizModel
+    {
+
+        /** @noinspection PhpIncompatibleReturnTypeInspection */
+        return QuizModel::query()->where('id', '=', $quizId)->first();
+    }
 }

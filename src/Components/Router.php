@@ -8,6 +8,7 @@ use Project\Controllers\ErrorController;
 use Project\Exceptions\Http\HttpForbiddenException;
 use Project\Exceptions\Http\HttpMethodNotAllowedException;
 use Project\Exceptions\Http\HttpNotFoundException;
+use Throwable;
 
 class Router
 {
@@ -47,6 +48,10 @@ class Router
         } catch (HttpMethodNotAllowedException $exception) {
             http_response_code($exception->getCode());
             $this->handleRoute(new Route(ErrorController::class, 'methodNotAllowed'));
+        } catch (Throwable $exception) {
+            http_response_code(500);
+
+            throw $exception;
         }
     }
 

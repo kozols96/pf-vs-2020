@@ -9,13 +9,13 @@ use Project\Models\QuestionModel;
 class QuestionRepository
 {
 
-    public function addQuestion(): QuestionModel
+    public function getByQuizIdAndOffset(int $quizId, int $offset): ?QuestionModel
     {
 
-    }
-
-    public function getQuestion(string $name): ?QuestionModel
-    {
-        return null;
+        /** @noinspection PhpIncompatibleReturnTypeInspection */
+        return QuestionModel::query()
+            ->where('quiz_id','=', $quizId)
+            ->offset($offset)
+            ->first();
     }
 }

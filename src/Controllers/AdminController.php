@@ -14,13 +14,17 @@ use Project\Services\UserService;
 
 class AdminController extends Controller
 {
-    /**
-     * @var UserRepository
-     */
+
     private UserRepository $userRepository;
     private QuizRepository  $quizRepository;
     private UserService $userService;
 
+    /**
+     * AdminController constructor.
+     * @param UserRepository|null $userRepository
+     * @param QuizRepository|null $quizRepository
+     * @param UserService|null $userService
+     */
     public function __construct(
         UserRepository $userRepository = null,
         QuizRepository $quizRepository = null,
@@ -31,6 +35,10 @@ class AdminController extends Controller
         $this->userService = $userService ?? new UserService();
     }
 
+    /**
+     * @return string|null
+     * @throws HttpForbiddenException
+     */
     public function index(): ?string
     {
         if (!ActiveUser::getUser()->is_admin) {
@@ -57,55 +65,33 @@ class AdminController extends Controller
 
         $id = (int)($_GET['id'] ?? null);
 
-        if (!$id) {
-
-            Session::getInstance()->setErrorMessage("User ID missing");
-
+        try {
+            $user = $this->userService->viewUser($id, ActiveUser::getUserId());;
+        } catch (AdminValidationException $exception) {
+            Session::getInstance()->setErrorMessage($exception->getMessage());
             return $this->redirect('/admin');
         }
-
-        $user = $this->userService->getUser($id);
-
-        if (!$user) {
-
-            Session::getInstance()->setErrorMessage("User with ID '{$id}' not found");
-
-            return $this->redirect('/admin');
-        }
-
         return $this->view('admin/view-user', ['user' => $user]);
     }
 
+    /**
+     * @return string|null
+     * @throws HttpForbiddenException
+     */
     public function toggleUserAdmin(): ?string
     {
         if (!ActiveUser::getUser()->is_admin) {
             throw new HttpForbiddenException();
         }
         $id = (int)($_POST['id'] ?? null);
-        // TODO: Pārcelt visu no [start] līdz [end] uz servisu.
-        // TODO: Visam starp start un end vajadzētu būt try catch blokā
-        // TODO: Repozitoriju loģiku (kur ir vaicājums lietotāja atrašanai vai izmaiņas lietotāja modelim) pārcelt uz UserRepository::getUserById, UserRepository::saveModel un izsaukt caur servisu
-        // TODO: Ja ir kāds errors (piem. userId === id), metam AdminException ar ziņu iekšā
-        // TODO: Tad kļūdas ziņojumu iestatam sesijā caur kontrolieri
-        // TODO: Citādāk (ja viss ok), izvadam success message arī caur sesiju un taisam redirect atpakaļ
-        // TODO: [start]
-        if ($this->userService->isSelectedUserActiveUserForToggle($id)) {
-
-            return $this->redirect($_SERVER['HTTP_REFERER']);
+        
+        try {
+            $this->userService->toggleUserAdmin($id, ActiveUser::getUserId());
+            Session::getInstance()->setSuccessMessage("User successfully toggled");
+        } catch (AdminValidationException $exception) {
+            Session::getInstance()->setErrorMessage($exception->getMessage());
         }
 
-        /** @var UserModel $user */
-        $user = $this->userService->getUser($id);
-
-        if (!$user) {
-            Session::getInstance()->setErrorMessage("User not found");
-        } else {
-            $user->is_admin = !$user->is_admin;
-            $user->save();
-            Session::getInstance()->setSuccessMessage("Admin status successfully toggled");
-        }
-
-        // TODO: [end]
         return $this->redirect($_SERVER['HTTP_REFERER']);
     }
 
@@ -122,21 +108,13 @@ class AdminController extends Controller
 
         $id = (int)($_POST['id'] ?? null);
 
-        if ($this->userService->isSelectedUserActiveUserForDelete($id)) {
-
-            return $this->redirect($_SERVER['HTTP_REFERER']);
-        }
-
-        $user = $this->userService->getUser($id);
-
-        if (!$user) {
-            Session::getInstance()->setErrorMessage("User not found");
-        } else {
-            $this->userService->deleteUser($id);
+        try {
+            $this->userService->deleteUser($id, ActiveUser::getUserId());
             Session::getInstance()->setSuccessMessage("User successfully deleted");
+        } catch (AdminValidationException $exception) {
+            Session::getInstance()->setErrorMessage($exception->getMessage());
         }
 
-        // TODO: [end]
-        return $this->redirect('/admin');
+        return $this->redirect($_SERVER['HTTP_REFERER']);
     }
 }

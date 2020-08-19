@@ -17,4 +17,6 @@ return [
     '/admin/delete-user' => new Route(AdminController::class, 'deleteUser', [Route::METHOD_POST]),
     '/admin/toggle-user-admin' => new Route(AdminController::class, 'toggleUserAdmin', [Route::METHOD_POST]),
     '/quiz-rpc/get-all' => new Route(QuizRpcController::class, 'getAll'),
+    '/quiz-rpc/start' => new Route(QuizRpcController::class, 'startQuiz'),
+    '/quiz-rpc/get-questions' => new Route(QuizRpcController::class, 'getQuestion')
 ];

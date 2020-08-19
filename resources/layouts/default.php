@@ -67,6 +67,11 @@ use Project\Components\View;
 
 
 <div id="app" class="container">
+  <div class="alert alert-warning">
+    <b>QUIZ IN PROGRESS!!!!</b><br/>
+    Attempt ID: <?= Session::getInstance()->get(Session::KEY_CURRENT_ATTEMPT_ID) ?><br/>
+    Questions answered: <?= Session::getInstance()->get(Session::KEY_QUESTIONS_ANSWERED) ?>
+  </div>
     <?php if (Session::getInstance()->hasSuccessMessage()): ?>
       <div class="alert alert-success">
           <?= e(Session::getInstance()->getSuccessMessage()) ?>
@@ -79,6 +84,7 @@ use Project\Components\View;
       </div>
     <?php endif; ?>
     <?= $this->content ?>
+
 </div>
 
 <script>

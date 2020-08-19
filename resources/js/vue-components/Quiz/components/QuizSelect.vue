@@ -57,13 +57,24 @@ export default {
         this.isLoading = false;
       });
     },
-    onStartClicked() {
+    async onStartClicked() {
       if (this.isButtonDisabled) {
         return;
       }
 
-      this.$emit('start-clicked');
-    }
+      const formData = new FormData();
+      formData.append('csrf', window.csrf);
+      formData.append('quizId', this.selectedQuizId);
+
+      this.isLoading = true;
+      await Axios.post('/quiz-rpc/start', formData).then((response) => {
+        if (response.data.success) {
+          this.$emit('start-clicked');
+        }
+      }).finally(() => {
+        this.isLoading = false;
+      });
+    },
   }
 }
 </script>

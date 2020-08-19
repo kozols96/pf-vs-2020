@@ -40,6 +40,10 @@ export default {
     userName: {
       type: String,
       required: true,
+    },
+    pIsQuizActive: {
+      type: Boolean,
+      required: true,
     }
   },
   components: {
@@ -49,6 +53,7 @@ export default {
   },
   data: () => ({
     currentStep: STEP_QUIZ_SELECT,
+    isQuizActive: false,
   }),
   computed: {
     allSteps() {
@@ -64,8 +69,16 @@ export default {
       }
     }
   },
+  created() {
+    this.isQuizActive = this.pIsQuizActive;
+
+    if (this.isQuizActive) {
+      this.currentStep = STEP_QUIZ_QUESTIONS;
+    }
+  },
   methods: {
     onStartClicked() {
+      this.isQuizActive = true;
       this.currentStep++;
     },
     onLastQuestionSubmitted() {

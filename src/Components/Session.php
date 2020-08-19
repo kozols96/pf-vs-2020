@@ -11,6 +11,8 @@ class Session
     public const KEY_SUCCESS_MESSAGE = 'success_message';
     public const KEY_ERROR_MESSAGE = 'error_message';
     public const KEY_CSRF =  'csrf';
+    public const KEY_CURRENT_ATTEMPT_ID = 'attempt_id';
+    public const KEY_QUESTIONS_ANSWERED = 'questions_answered';
 
     private static ?Session $instance = null;
 

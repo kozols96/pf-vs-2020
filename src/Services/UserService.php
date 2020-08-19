@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Project\Services;
 
+use http\Client\Curl\User;
 use Project\Components\ActiveUser;
 use Project\Components\Session;
 use Project\Exceptions\AdminValidationException;
@@ -99,75 +100,6 @@ class UserService
     }
 
     /**
-     * @param int $id
-     * @return bool
-     */
-    public function isSelectedUserActiveUserForToggle(int $id)
-    {
-
-        try {
-            $this->validateSelectedUserForToggle($id);
-        } catch (AdminValidationException $exception) {
-            Session::getInstance()->setErrorMessage($exception->getMessage());
-        }
-        return ActiveUser::getUserId() === $id;
-    }
-
-    /**
-     * @param int $id
-     * @return bool
-     */
-    public function isSelectedUserActiveUserForDelete(int $id)
-    {
-
-        try {
-            $this->validateSelectedUserForDelete($id);
-        } catch (AdminValidationException $exception) {
-            Session::getInstance()->setErrorMessage($exception->getMessage());
-        }
-        return ActiveUser::getUserId() === $id;
-    }
-
-    /**
-     * @param int $id
-     * @return bool
-     * @throws AdminValidationException
-     */
-    public function validateSelectedUserForToggle(int $id)
-    {
-
-        $isSelectedUserActiveUser = ActiveUser::getUserId() === $id;
-
-        if ($isSelectedUserActiveUser === true) {
-
-            throw new AdminValidationException("You can't toggle yourself");
-        }
-
-        return true;
-
-    }
-
-    /**
-     * @param int $id
-     * @return bool
-     * @throws AdminValidationException
-     */
-    public function validateSelectedUserForDelete(int $id)
-    {
-
-        $isSelectedUserActiveUser = ActiveUser::getUserId() === $id;
-
-        if ($isSelectedUserActiveUser === true) {
-
-            throw new AdminValidationException("You can't delete yourself");
-        }
-
-        return true;
-
-    }
-
-
-    /**
      * @param UserLoginItem $loginItem
      * @return UserModel|null
      * @throws UserLoginException
@@ -218,11 +150,73 @@ class UserService
 
     /**
      * @param int $id
-     * @return UserModel
+     * @param int $activeUserId
+     * @return UserModel|null
+     * @throws AdminValidationException
      */
-    public function deleteUser(int $id): UserModel
+    public function viewUser(int $id, int $activeUserId): ?UserModel
     {
+
+        if (!$id) {
+
+            throw new AdminValidationException("User ID missing");
+        }
+
+
         $user = $this->userRepository->getUserById($id);
+
+
+        if (!$user) {
+
+            throw new AdminValidationException("User with ID '{$id}' not found");
+        }
+
+        return $user;
+    }
+
+    /**
+     * @param int $id
+     * @param int $activeUserId
+     * @return UserModel|null
+     * @throws AdminValidationException
+     */
+    public function toggleUserAdmin(int $id, int $activeUserId): ?UserModel
+    {
+
+        if ($id === $activeUserId) {
+
+            throw new AdminValidationException("You can't toggle your own admin status!");
+        }
+
+        $user = $this->userRepository->getUserById($id);
+
+        if (!$user) {
+            throw new AdminValidationException("User not found");
+        }
+
+        $user->is_admin = !$user->is_admin;
+
+        return $this->userRepository->saveModel($user);
+    }
+
+    /**
+     * @param int $id
+     * @param int $activeUserId
+     * @return UserModel
+     * @throws AdminValidationException
+     */
+    public function deleteUser(int $id, int $activeUserId): ?UserModel
+    {
+        if ($activeUserId === $id) {
+            throw new AdminValidationException("You can't delete yourself");
+        }
+
+        $user = $this->userRepository->getUserById($id);
+
+        if (!$user) {
+            throw new AdminValidationException("User not found");
+        }
+
         $user->email = null;
         $user->password = null;
         $user->name = 'Former user';

@@ -27,12 +27,12 @@ class QuestionStructure {
         /** @type {Array.<AnswerStructure>} */
         this.answers = [];
 
-        if (params.answerData !== undefined) {
-            const answerData = params.answerData;
+        if (params.answers !== undefined) {
+            const answerData = params.answers;
 
             this.answers = answerData.map((answerDatum) => new AnswerStructure(answerDatum));
 
-            delete params.answerData;
+            delete params.answers;
         }
     }
 }

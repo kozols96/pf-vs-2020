@@ -4,7 +4,6 @@ use Project\Components\ActiveUser;
 use Project\Components\Session;
 use Project\Components\View;
 use Project\Models\UserModel;
-use Project\Structures\UserLoginItem;
 
 /**
  * @var View $this
@@ -54,13 +53,11 @@ $this->title = 'User: ' . e($user->name);
 <h4>Danger zone:</h4>
 
 <form action="/admin/delete-user" method="post">
-    <input type="text" name="id" value="<?= $user->id ?>">
+    <input type="hidden" name="id" value="<?= $user->id ?>">
     <input type="hidden" name="csrf" value="<?= Session::getInstance()->getCsrf() ?>">
-    <?php if (ActiveUser::isLoggedIn()): ?>
     <button type="submit" class="btn btn-danger">
         Delete user
     </button>
-    <?php endif;?>
 </form>
 
 
