@@ -39,7 +39,6 @@ class QuizRpcController extends Controller
 
     public function startQuiz(): string
     {
-
         $activeUserId = ActiveUser::getUserId();
         $quizId = (int)($_POST['quizId'] ?? null);
 
@@ -54,16 +53,24 @@ class QuizRpcController extends Controller
 
     public function getQuestion(): string
     {
-
         $question = $this->quizService->getNextQuestionStructure();
         $isLastQuestion = $this->quizService->isLastQuestion();
 
         return json_encode(
             [
                 'success' => true,
-                'questionData' => $question->toArray(),
+                'questionData' => $question ? $question->toArray() : null,
                 'isLastQuestion' => $isLastQuestion,
             ]
         );
+    }
+
+    public function saveAnswer(): string
+    {
+        $answerId = (int)($_POST['answerId'] ?? null);
+
+        $this->quizService->saveAnswer($answerId);
+
+        return json_encode(['success' => true]);
     }
 }

@@ -18,4 +18,10 @@ class AnswerRepository
     {
         return null;
     }
+
+    public function getById(int $answerId): ?AnswerModel
+    {
+        /** @noinspection PhpIncompatibleReturnTypeInspection */
+        return AnswerModel::query()->where('id', '=', $answerId)->first();
+    }
 }

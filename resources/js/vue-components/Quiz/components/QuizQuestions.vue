@@ -14,7 +14,10 @@
       </div>
     </template>
 
-    <button class="btn btn-primary" :disabled="!selectedAnswerId" @click="onNextClicked()">Next</button>
+    <button class="btn btn-primary"
+            :disabled="!selectedAnswerId"
+            @click="onNextClicked()">Next
+    </button>
   </div>
 </template>
 
@@ -41,7 +44,13 @@ export default {
       formData.append('csrf', window.csrf);
 
       this.isLoading = true;
-      await Axios.post('/quiz-rpc/get-questions', formData).then((response) => {
+      await Axios.post('/quiz-rpc/get-question', formData).then((response) => {
+        if (!response.data.questionData) {
+          this.onLastQuestionSubmitted();
+
+          return;
+        }
+
         this.currentQuestion = new QuestionStructure(response.data.questionData);
         this.isLastQuestion = response.data.isLastQuestion;
       }).finally(() => {
@@ -59,11 +68,27 @@ export default {
       }
     },
 
-    onNextClicked() {
-      // TODO: implement
-      this.getNextQuestion();
+    async onNextClicked() {
+      if (!this.selectedAnswerId) {
+        return;
+      }
 
-      this.onLastQuestionSubmitted();
+      const formData = new FormData();
+      formData.append('csrf', window.csrf);
+      formData.append('answerId', this.selectedAnswerId);
+
+      await Axios.post('/quiz-rpc/save-answer', formData).then((response) => {
+        if (this.isLastQuestion) {
+          this.onLastQuestionSubmitted();
+        }
+        this.getNextQuestion();
+      }).finally(() => {
+        this.isLoading = false;
+      });
+    },
+
+    saveAnswer() {
+
     },
     onLastQuestionSubmitted() {
       this.$emit('last-question-submitted')
