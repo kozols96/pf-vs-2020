@@ -4,7 +4,6 @@
 namespace Project\Controllers;
 
 
-use Exception;
 use Project\Components\ActiveUser;
 use Project\Components\Controller;
 use Project\Services\QuizServices;
@@ -72,5 +71,18 @@ class QuizRpcController extends Controller
         $this->quizService->saveAnswer($answerId);
 
         return json_encode(['success' => true]);
+    }
+
+    public function getResults(): string
+    {
+        [$correctAnswerCount, $totalQuestionCount] = $this->quizService->getResults();
+
+        return json_encode(
+            [
+                'success' => true,
+                'correctAnswerCount' => $correctAnswerCount,
+                'totalQuestionCount' => $totalQuestionCount,
+            ]
+        );
     }
 }

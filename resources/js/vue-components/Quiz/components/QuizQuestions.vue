@@ -79,20 +79,17 @@ export default {
 
       await Axios.post('/quiz-rpc/save-answer', formData).then((response) => {
         if (this.isLastQuestion) {
-          this.onLastQuestionSubmitted();
+            this.onLastQuestionSubmitted();
+          return;
         }
         this.getNextQuestion();
       }).finally(() => {
         this.isLoading = false;
       });
     },
-
-    saveAnswer() {
-
-    },
     onLastQuestionSubmitted() {
-      this.$emit('last-question-submitted')
+      this.$emit('last-question-submitted');
     }
-  }
+  },
 }
 </script>

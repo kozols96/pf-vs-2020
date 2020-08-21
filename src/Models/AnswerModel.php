@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property int $id
  * @property int $question_id
  * @property string $title
- * @property bool $isCorrect
+ * @property bool $is_correct
  *
  * @property QuestionModel $question
  * @property UserQuizAttemptAnswerModel[] $userAttemptAnswers

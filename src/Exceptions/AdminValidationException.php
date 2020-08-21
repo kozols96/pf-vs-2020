@@ -3,8 +3,10 @@
 namespace Project\Exceptions;
 
 
-class AdminValidationException extends \Exception
-{
+use Exception;
 
+
+class AdminValidationException extends Exception
+{
     public array $errorMessage = [];
 }

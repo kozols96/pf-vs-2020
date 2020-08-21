@@ -4,10 +4,8 @@ error_reporting(E_ALL);
 error_reporting(-1);
 ini_set('error_reporting', E_ALL);
 
-use Project\Components\Route;
 use Project\Components\Router;
 use Project\Components\Session;
-use Project\Controllers\ErrorController;
 
 require_once '../vendor/autoload.php';
 require_once '../bootstrap/app.php';

@@ -5,7 +5,7 @@ FROM php:7.4-fpm as base
 RUN docker-php-ext-install opcache
 
 # Install Laravel dependencies
-RUN docker-php-ext-install pdo pdo_mysql
+RUN docker-php-ext-install pdo pdo_mysql mysqli
 
 RUN apt update && apt install -y git zip
 # docker-compose down

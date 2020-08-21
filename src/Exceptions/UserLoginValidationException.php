@@ -4,7 +4,7 @@
 namespace Project\Exceptions;
 
 
-class UserLoginException extends \Exception
+class UserLoginValidationException extends \Exception
 {
 
     public array $errorMessages = [];

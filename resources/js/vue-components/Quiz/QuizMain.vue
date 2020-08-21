@@ -12,8 +12,8 @@
     />
     <quiz-results
         v-else-if="currentStep === allSteps.STEP_QUIZ_RESULTS"
-        @quiz-finished="onQuizFinished()"
         :user-name="userName"
+        @quiz-finished="onQuizFinished()"
     />
   </div>
 
@@ -44,12 +44,12 @@ export default {
     pIsQuizActive: {
       type: Boolean,
       required: true,
-    }
+    },
   },
   components: {
     QuizSelect,
     QuizQuestions,
-    QuizResults
+    QuizResults,
   },
   data: () => ({
     currentStep: STEP_QUIZ_SELECT,
@@ -85,7 +85,7 @@ export default {
       this.currentStep++;
     },
     onQuizFinished() {
-      this.currentStep++;
+      this.currentStep = STEP_QUIZ_SELECT;
     }
   }
 }

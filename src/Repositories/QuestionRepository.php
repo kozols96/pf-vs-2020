@@ -18,4 +18,29 @@ class QuestionRepository
             ->offset($offset)
             ->first();
     }
+
+    public function getAll()
+    {
+
+        return QuestionModel::all()->all();
+    }
+
+    public function getQuestionById(int $id): ?QuestionModel
+    {
+
+        /** @noinspection PhpIncompatibleReturnTypeInspection */
+        return QuestionModel::query()->where('id', '=', $id)->first();
+    }
+
+    public function checkIsQuestionAdded($title): bool
+    {
+        return QuestionModel::query()->where('title', '=', $title)->exists();
+    }
+
+    public function saveQuestion(QuestionModel $question)
+    {
+        $question->save();
+
+        return $question;
+    }
 }

@@ -3,11 +3,9 @@ declare(strict_types=1);
 
 namespace Project\Services;
 
-use http\Client\Curl\User;
-use Project\Components\ActiveUser;
 use Project\Components\Session;
 use Project\Exceptions\AdminValidationException;
-use Project\Exceptions\UserLoginException;
+use Project\Exceptions\UserLoginValidationException;
 use Project\Exceptions\UserRegistrationValidationException;
 use Project\Models\UserModel;
 use Project\Repositories\UserRepository;
@@ -18,7 +16,6 @@ class UserService
 {
 
     private UserRepository $userRepository;
-
     private Session $session;
 
     /**
@@ -102,27 +99,27 @@ class UserService
     /**
      * @param UserLoginItem $loginItem
      * @return UserModel|null
-     * @throws UserLoginException
+     * @throws UserLoginValidationException
      */
     public function signIn(UserLoginItem $loginItem): ?UserModel
     {
         // TODO implement
 
         if (!$loginItem->email || !$loginItem->password) {
-            throw new UserLoginException();
+            throw new UserLoginValidationException();
         }
 
         $user = $this->userRepository->getUserByEmail($loginItem->email);
 
         if (!$user) {
 
-            throw new UserLoginException();
+            throw new UserLoginValidationException();
 
         }
 
         if (!password_verify($loginItem->password, $user->password)) {
 
-            throw new UserLoginException();
+            throw new UserLoginValidationException();
 
         }
 

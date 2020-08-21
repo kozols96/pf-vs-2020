@@ -5,15 +5,16 @@
     "robmorgan/phinx": "^0.12.3",
     "vlucas/phpdotenv": "^5.1",
     "fzaninotto/faker": "^1.9",
-    "ext-mysql_xdevapi": "*",
-    "ext-json": "*"
+    "ext-json": "*",
+    "mockery/mockery": "^1.4"
   },
   "require-dev": {
     "phpunit/phpunit": "^9.3.5"
   },
   "autoload": {
     "psr-4": {
-      "Project\\": "src/"
+      "Project\\": "src/",
+      "Tests\\": "tests/"
     }
   }
 }
