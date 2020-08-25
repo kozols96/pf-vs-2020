@@ -6,10 +6,11 @@ namespace Project\Structures;
 
 use Project\Traits\FromArrayTrait;
 
-class AnswerAddItem
+class AnswerItem
 {
 
     use FromArrayTrait;
 
     public ?string $title = null;
+    public ?bool $is_correct = null;
 }

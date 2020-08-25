@@ -1,6 +1,7 @@
 <?php
 
 use Project\Components\View;
+use Project\Models\QuestionModel;
 use Project\Models\QuizModel;
 
 /**
@@ -9,7 +10,7 @@ use Project\Models\QuizModel;
  */
 
 
-$this->title = 'Quiz : '.e($quizzes->name);
+$this->title = 'Quiz : ' . e($quizzes->name);
 
 ?>
 
@@ -19,6 +20,7 @@ $this->title = 'Quiz : '.e($quizzes->name);
   <tr>
     <th>Question ID</th>
     <th>Question</th>
+    <th>Answer count</th>
     <th></th>
   </tr>
   </thead>
@@ -28,6 +30,7 @@ $this->title = 'Quiz : '.e($quizzes->name);
       <td><?= $question->id; ?></td>
       <td><?= e($question->title); ?>
       </td>
+      <td><?= $question->answers()->count(); ?></td>
       <td><a class="btn btn-sm btn-warning"
              href="/admin/edit/question?id=<?= urlencode($question->id); ?>">
           Edit
@@ -42,5 +45,5 @@ $this->title = 'Quiz : '.e($quizzes->name);
 </table>
 
 <a class="btn btn-lg btn-success"
-   href="/admin/add/question?id=<?=urlencode($quizzes->id)?>">
+   href="/admin/add/question?id=<?= urlencode($quizzes->id); ?>">
   Add new question</a>

@@ -39,4 +39,9 @@ class QuizRepository
     {
         return QuizModel::query()->where('name', '=', $name)->exists();
     }
+
+    public function updateQuiz(int $id, string $name)
+    {
+        return QuizModel::query()->where('id', '=', $id)->update(['name' => $name]);
+    }
 }

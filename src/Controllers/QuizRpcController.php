@@ -6,21 +6,21 @@ namespace Project\Controllers;
 
 use Project\Components\ActiveUser;
 use Project\Components\Controller;
-use Project\Services\QuizServices;
+use Project\Services\QuizService;
 
 
 class QuizRpcController extends Controller
 {
 
-    private QuizServices $quizService;
+    private QuizService $quizService;
 
     /**
      * QuizRpcController constructor.
-     * @param QuizServices|null $quizService
+     * @param QuizService|null $quizService
      */
-    public function __construct(QuizServices $quizService = null)
+    public function __construct(QuizService $quizService = null)
     {
-        $this->quizService = $quizService ?? new QuizServices();
+        $this->quizService = $quizService ?? new QuizService();
     }
 
     public function getAll(): string

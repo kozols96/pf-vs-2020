@@ -7,6 +7,7 @@ namespace Project\Services;
 use Exception;
 use Project\Components\Session;
 use Project\Exceptions\AdminValidationException;
+use Project\Models\AnswerModel;
 use Project\Models\QuestionModel;
 use Project\Models\QuizModel;
 use Project\Models\UserQuizAttemptAnswerModel;
@@ -16,13 +17,14 @@ use Project\Repositories\QuestionRepository;
 use Project\Repositories\QuizRepository;
 use Project\Repositories\UserQuizAttemptAnswerRepository;
 use Project\Repositories\UserQuizAttemptRepository;
+use Project\Structures\AnswerItem;
 use Project\Structures\AnswerStructure;
-use Project\Structures\QuestionAddItem;
+use Project\Structures\QuestionItem;
 use Project\Structures\QuestionStructure;
-use Project\Structures\QuizAddItem;
+use Project\Structures\QuizItem;
 use Project\Structures\QuizStructure;
 
-class QuizServices
+class QuizService
 {
     private QuizRepository $quizRepository;
     private Session $session;
@@ -32,7 +34,7 @@ class QuizServices
     private UserQuizAttemptAnswerRepository $userQuizAttemptAnswerRepository;
 
     /**
-     * QuizServices constructor.
+     * QuizService constructor.
      * @param QuizRepository|null $quizRepository
      * @param Session|null $session
      * @param QuestionRepository|null $questionRepository
@@ -58,13 +60,6 @@ class QuizServices
     }
 
     /**
-     * @param int $id
-     * @return QuizModel|null
-     * @throws AdminValidationException
-     */
-
-
-    /**
      * @return QuizStructure[]
      */
     public function getQuizDataStructures(): array
@@ -86,13 +81,6 @@ class QuizServices
 
         return $quizStructures;
     }
-
-    /**
-     * @param QuizAddItem $quizAddItem
-     * @return QuizModel
-     * @throws AdminValidationException
-     */
-
 
     /**
      * @param int $activeUserId
@@ -171,7 +159,7 @@ class QuizServices
     {
         $attemptId = $this->session->get(Session::KEY_CURRENT_ATTEMPT_ID);
         $attempt = $this->userQuizAttemptRepository->getById($attemptId);
-        $answerModel = $this->answerRepository->getById($answerId);
+        $answerModel = $this->answerRepository->getAnswerById($answerId);
         if (!$answerModel) {
             throw new Exception("Answer not found!");
         }
@@ -228,11 +216,11 @@ class QuizServices
     }
 
     /**
-     * @param QuizAddItem $quizAddItem
+     * @param QuizItem $quizAddItem
      * @return QuizModel
      * @throws AdminValidationException
      */
-    public function addQuiz(QuizAddItem $quizAddItem): QuizModel
+    public function addQuiz(QuizItem $quizAddItem): QuizModel
     {
 
         $this->validateQuizItemOrFail($quizAddItem);
@@ -247,16 +235,20 @@ class QuizServices
     }
 
     /**
-     * @param QuizAddItem $quizAddItem
+     * @param QuizItem $quizAddItem
      * @throws AdminValidationException
      */
-    private function validateQuizItemOrFail(QuizAddItem $quizAddItem)
+    private function validateQuizItemOrFail(QuizItem $quizAddItem)
     {
 
         $errors = [];
 
         if ($this->quizRepository->checkIsQuizAdded($quizAddItem->name)) {
             $errors[] = "Quiz with this name is already added";
+        }
+
+        if (!$quizAddItem->name) {
+            $errors[] = "Please add quiz name!";
         }
 
         if ($errors) {
@@ -278,9 +270,7 @@ class QuizServices
             throw new AdminValidationException("Quiz ID missing");
         }
 
-
         $question = $this->questionRepository->getQuestionById($id);
-
 
         if (!$question) {
             throw new AdminValidationException("Quiz with ID '{$id}' not found");
@@ -290,11 +280,12 @@ class QuizServices
     }
 
     /**
-     * @param QuestionAddItem $questionAddItem
+     * @param QuestionItem $questionAddItem
+     * @param QuizModel $quiz
      * @return QuestionModel
      * @throws AdminValidationException
      */
-    public function addQuestion(QuestionAddItem $questionAddItem, QuizModel $quiz)
+    public function addQuestion(QuestionItem $questionAddItem, QuizModel $quiz)
     {
         $this->validateQuestionItemOrFail($questionAddItem);
 
@@ -307,15 +298,19 @@ class QuizServices
         return $question;
     }
 
-    private function validateQuestionItemOrFail(QuestionAddItem $questionAddItem)
+    private function validateQuestionItemOrFail(QuestionItem $questionAddItem)
     {
         $errors = [];
 
         $id = (int)($_GET['id'] ?? null);
 
-        if ($this->quizRepository->getById($id)) {
+        if ($this->questionRepository->getQuestionById($id)) {
             if ($this->questionRepository->checkIsQuestionAdded($questionAddItem->title)) {
                 $errors[] = "Quiz with this name is already added";
+            }
+
+            if (!$questionAddItem->title) {
+                $errors[] = "Please add question title!";
             }
         }
         if ($errors) {
@@ -324,5 +319,113 @@ class QuizServices
 
             throw $exception;
         }
+    }
+
+    /**
+     * @param AnswerItem $answerAddItem
+     * @param QuestionModel $question
+     * @return AnswerModel
+     * @throws AdminValidationException
+     */
+    public function addAnswer(AnswerItem $answerAddItem, QuestionModel $question)
+    {
+        $this->validateAnswerItemOrFail($answerAddItem);
+
+        $answer = new AnswerModel();
+        $answer->question_id = $question->id;
+        $answer->title = $answerAddItem->title;
+        $answer->is_correct = $answerAddItem->is_correct;
+
+        $answer = $this->answerRepository->saveAnswer($answer);
+
+        return $answer;
+    }
+
+    private function validateAnswerItemOrFail(AnswerItem $answerAddItem)
+    {
+        $errors = [];
+
+        $id = (int)($_GET['id'] ?? null);
+
+        if ($this->answerRepository->getAnswerById($id)) {
+            if ($this->answerRepository->checkIsAnswerAdded($answerAddItem->title)) {
+                $errors[] = "Answer with this name is already added";
+            }
+            if (!$answerAddItem->title) {
+                $errors[] = "Please add answer title!";
+            }
+        }
+
+        if ($errors) {
+            $exception = new AdminValidationException();
+            $exception->errorMessage = $errors;
+
+            throw $exception;
+        }
+    }
+
+    /**
+     * @param QuizItem|null $quizItem
+     * @param QuizModel|null $quiz
+     * @return QuizModel
+     * @throws AdminValidationException
+     */
+    public function editQuiz(?QuizItem $quizItem, ?QuizModel $quiz)
+    {
+        $this->validateQuizItemOrFail($quizItem);
+
+        $id = (int)($_GET['id'] ?? null);
+
+        $quiz->name = $quizItem->name;
+
+        $this->quizRepository->updateQuiz($id, $quizItem->name);
+
+        $quiz = $this->quizRepository->saveQuiz($quiz);
+
+        return $quiz;
+    }
+
+    /**
+     * @param QuestionItem $questionItem
+     * @param QuestionModel|null $question
+     * @return QuestionModel
+     * @throws AdminValidationException
+     */
+    public function editQuestion(QuestionItem $questionItem, ?QuestionModel $question)
+    {
+        $this->validateQuestionItemOrFail($questionItem);
+
+        $id = (int)($_GET['id'] ?? null);
+
+        $question->title = $questionItem->title;
+
+        $this->questionRepository->updateQuestion($id, $questionItem->title);
+
+        $question = $this->questionRepository->saveQuestion($question);
+
+        return $question;
+    }
+
+    /**
+     * @param AnswerItem $answerItem
+     * @param AnswerModel|null $answer
+     * @return AnswerModel
+     * @throws AdminValidationException
+     */
+    public function editAnswer(AnswerItem $answerItem, ?AnswerModel $answer)
+    {
+        $this->validateAnswerItemOrFail($answerItem);
+
+        $id = (int)($_GET['id'] ?? null);
+
+        $answer->title = $answerItem->title;
+
+        $answer->is_correct = $answerItem->is_correct;
+
+        $this->answerRepository->updateAnswer($id, $answerItem->title, $answerItem->is_correct);
+
+        $answer = $this->answerRepository->saveAnswer($answer);
+
+        return $answer;
     }
 }

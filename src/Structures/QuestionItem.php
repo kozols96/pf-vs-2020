@@ -6,7 +6,7 @@ namespace Project\Structures;
 
 use Project\Traits\FromArrayTrait;
 
-class QuestionAddItem
+class QuestionItem
 {
 
     use FromArrayTrait;

@@ -6,7 +6,7 @@ namespace Project\Structures;
 
 use Project\Traits\FromArrayTrait;
 
-class QuizAddItem
+class QuizItem
 {
 
     use FromArrayTrait;

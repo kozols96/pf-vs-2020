@@ -8,14 +8,15 @@ use Project\Components\Session;
 use Project\Exceptions\AdminValidationException;
 use Project\Exceptions\Http\HttpForbiddenException;
 use Project\Exceptions\Http\HttpNotFoundException;
+use Project\Repositories\AnswerRepository;
 use Project\Repositories\QuestionRepository;
 use Project\Repositories\QuizRepository;
 use Project\Repositories\UserRepository;
-use Project\Services\QuizServices;
+use Project\Services\QuizService;
 use Project\Services\UserService;
-use Project\Structures\AnswerAddItem;
-use Project\Structures\QuestionAddItem;
-use Project\Structures\QuizAddItem;
+use Project\Structures\AnswerItem;
+use Project\Structures\QuestionItem;
+use Project\Structures\QuizItem;
 
 class AdminController extends Controller
 {
@@ -23,29 +24,33 @@ class AdminController extends Controller
     private UserRepository $userRepository;
     private QuizRepository  $quizRepository;
     private QuestionRepository $questionRepository;
+    private AnswerRepository $answerRepository;
     private UserService $userService;
-    private QuizServices $quizService;
+    private QuizService $quizService;
 
     /**
      * AdminController constructor.
      * @param UserRepository|null $userRepository
      * @param QuizRepository|null $quizRepository
      * @param QuestionRepository|null $questionRepository
+     * @param AnswerRepository|null $answerRepository
      * @param UserService|null $userService
-     * @param QuizServices|null $quizService
+     * @param QuizService|null $quizService
      */
     public function __construct(
         UserRepository $userRepository = null,
         QuizRepository $quizRepository = null,
         QuestionRepository $questionRepository = null,
+        AnswerRepository $answerRepository = null,
         UserService $userService = null,
-        QuizServices $quizService = null
+        QuizService $quizService = null
     ) {
         $this->userRepository = $userRepository ?? new UserRepository();
         $this->quizRepository = $quizRepository ?? new QuizRepository();
         $this->questionRepository = $questionRepository ?? new QuestionRepository();
+        $this->answerRepository = $answerRepository ?? new AnswerRepository();
         $this->userService = $userService ?? new UserService();
-        $this->quizService = $quizService ?? new QuizServices();
+        $this->quizService = $quizService ?? new QuizService();
     }
 
     /**
@@ -162,7 +167,7 @@ class AdminController extends Controller
             throw new HttpForbiddenException();
         }
 
-        $quizAddItem = QuizAddItem::fromArray($_POST);
+        $quizAddItem = QuizItem::fromArray($_POST);
         $errors = [];
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -179,12 +184,7 @@ class AdminController extends Controller
         return $this->view('admin/add/quiz', ['quizAddItem' => $quizAddItem, 'errors' => $errors]);
     }
 
-    /**
-     * @return string|null
-     * @throws AdminValidationException
-     * @throws HttpForbiddenException
-     */
-    public function addQuestion()
+    public function editQuiz()
     {
         if (!ActiveUser::getUser()->is_admin) {
             throw new HttpForbiddenException();
@@ -192,64 +192,23 @@ class AdminController extends Controller
 
         $id = (int)($_GET['id'] ?? null);
 
-        $questionAddItem = QuestionAddItem::fromArray($_POST);
-
-        $errors = [];
+        $quizItem = QuizItem::fromArray($_POST);
 
         $quiz = $this->quizRepository->getQuizByID($id);
 
-        if (!$quiz) {
-
-            throw new HttpNotFoundException();
-
-        }
-
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-
-            try {
-                $this->quizService->addQuestion($questionAddItem, $quiz);
-
-                return $this->redirect('/admin/view-quiz?id='.$id);
-            } catch (AdminValidationException $exception) {
-                $errors = $exception->errorMessage;
-            }
-        }
-
-        return $this->view('admin/add/question', ['questionAddItem' => $questionAddItem, 'quiz' => $quiz, 'errors' => $errors]);
-    }
-
-    public function addAnswer()
-    {
-        if (!ActiveUser::getUser()->is_admin) {
-            throw new HttpForbiddenException();
-        }
-
-        $answerAddItem = AnswerAddItem::fromArray($_POST);
         $errors = [];
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-
             try {
-                $this->quizService->addAnswer($answerAddItem);
-
+                $this->quizService->editQuiz($quizItem, $quiz);
                 return $this->redirect('/admin');
             } catch (AdminValidationException $exception) {
                 $errors = $exception->errorMessage;
             }
         }
 
-        return $this->view('admin/add/quiz', ['answerAddItem' => $answerAddItem, 'errors' => $errors]);
+        return $this->view('admin/edit/quiz', ['quiz' => $quiz, 'quizItem' => $quizItem, 'errors' => $errors]);
     }
-
-    public function editQuiz()
-    {
-        if (!ActiveUser::getUser()->is_admin) {
-            throw new HttpForbiddenException();
-        }
-
-        return $this->view('admin/edit/quiz');
-    }
-
 
     public function viewQuestion(): ?string
     {
@@ -270,5 +229,130 @@ class AdminController extends Controller
         return $this->view('admin/view-question', ['questions' => $questions]);
     }
 
+    /**
+     * @return string|null
+     * @throws AdminValidationException
+     * @throws HttpForbiddenException
+     */
+    public function addQuestion()
+    {
+        if (!ActiveUser::getUser()->is_admin) {
+            throw new HttpForbiddenException();
+        }
 
+        $id = (int)($_GET['id'] ?? null);
+
+        $questionAddItem = QuestionItem::fromArray($_POST);
+
+        $errors = [];
+
+        $quiz = $this->quizRepository->getQuizByID($id);
+
+        if (!$quiz) {
+
+            throw new HttpNotFoundException();
+
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+            try {
+                $this->quizService->addQuestion($questionAddItem, $quiz);
+
+                return $this->redirect('/admin/view-quiz?id=' . $id);
+            } catch (AdminValidationException $exception) {
+                $errors = $exception->errorMessage;
+            }
+        }
+
+        return $this->view('admin/add/question', ['questionAddItem' => $questionAddItem, 'quiz' => $quiz, 'errors' => $errors]);
+    }
+
+    public function editQuestion()
+    {
+        if (!ActiveUser::getUser()->is_admin) {
+            throw new HttpForbiddenException();
+        }
+
+        $id = (int)($_GET['id'] ?? null);
+
+        $questionItem = QuestionItem::fromArray($_POST);
+
+        $question = $this->questionRepository->getQuestionById($id);
+
+
+        $errors = [];
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            try {
+                $this->quizService->editQuestion($questionItem, $question);
+                return $this->redirect('/admin/view-quiz?id=' . $question->quiz_id);
+            } catch (AdminValidationException $exception) {
+                $errors = $exception->errorMessage;
+            }
+        }
+
+        return $this->view('admin/edit/question', ['question' => $question, 'questionItem' => $questionItem, 'errors' => $errors]);
+    }
+
+    /**
+     * @return string|null
+     * @throws HttpForbiddenException
+     */
+    public function addAnswer()
+    {
+        if (!ActiveUser::getUser()->is_admin) {
+            throw new HttpForbiddenException();
+        }
+
+        $id = (int)($_GET['id'] ?? null);
+
+        $answerAddItem = AnswerItem::fromArray($_POST);
+        $errors = [];
+
+        $question = $this->questionRepository->getQuestionById($id);
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+            try {
+                $this->quizService->addAnswer($answerAddItem, $question);
+
+                return $this->redirect('/admin/view-question?id=' . $id);
+            } catch (AdminValidationException $exception) {
+                $errors = $exception->errorMessage;
+            }
+        }
+
+        return $this->view('admin/add/answer', ['answerAddItem' => $answerAddItem, 'question' => $question, 'errors' => $errors]);
+    }
+
+    /**
+     * @return string|null
+     * @throws HttpForbiddenException
+     */
+    public function editAnswer()
+    {
+        if (!ActiveUser::getUser()->is_admin) {
+            throw new HttpForbiddenException();
+        }
+
+        $id = (int)($_GET['id'] ?? null);
+
+        $answerItem = AnswerItem::fromArray($_POST);
+
+        $errors = [];
+
+        $answer = $this->answerRepository->getAnswerById($id);
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            try {
+                $this->quizService->editAnswer($answerItem, $answer);
+                return $this->redirect('/admin/view-question?id=' . $answer->question_id);
+            } catch (AdminValidationException $exception) {
+                $errors = $exception->errorMessage;
+            }
+        }
+
+        return $this->view('admin/edit/answer', ['answer' => $answer, 'answerItem' => $answerItem, 'errors' => $errors]);
+    }
 }

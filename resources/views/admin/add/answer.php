@@ -2,11 +2,13 @@
 
 use Project\Components\Session;
 use Project\Components\View;
-use Project\Structures\AnswerAddItem;
+use Project\Models\QuestionModel;
+use Project\Structures\AnswerItem;
 
 /**
  * @var View $this
- * @var AnswerAddItem $answerAddItem
+ * @var AnswerItem $answerAddItem
+ * @var QuestionModel $question
  * @var array $errors
  */
 
@@ -26,19 +28,28 @@ $this->title = 'Add answer';
 
 <?php endif;?>
 
-<form action="/admin/add/answer" method="post">
+<form action="/admin/add/answer?id=<?= $question->id; ?>" method="post">
     <div class="form-group">
-        <label for="inputName">Name</label>
+        <label for="inputTitle">Title</label>
         <input type="hidden"
                name="csrf"
                value="<?=e(Session::getInstance()->getCsrf())?>">
         <input
             type="text"
-            name="name"
+            name="title"
             class="form-control"
             id="exampleInputEmail1"
-            placeholder="Enter name"
-            value="<?= e($answerAddItem->name); ?>">
+            placeholder="Enter title"
+            value="<?= e($answerAddItem->title); ?>">
+
+        <label for="chooseIsCorrect">Is it correct?</label>
+
+        <select class="form-control"
+                name="is_correct">
+          <option value="<?= !$answerAddItem->is_correct; ?>">Yes</option>
+          <option value="<?= $answerAddItem->is_correct; ?>">No</option>
+        </select>
+
     </div>
 
     <button type="submit" class="btn btn-primary">Submit</button>

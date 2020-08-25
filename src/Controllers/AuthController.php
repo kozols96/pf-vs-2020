@@ -73,7 +73,7 @@ class AuthController extends Controller
         return $this->view('register', ['registerItem' => $registerItem, 'errors' => $errors]);
     }
 
-    public function logout(): string
+    public function logout(): ?string
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 

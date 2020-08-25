@@ -2,12 +2,11 @@
 
 use Project\Components\Session;
 use Project\Components\View;
-use Project\Structures\QuizAddItem;
-use Project\Structures\UserRegisterItem;
+use Project\Structures\QuizItem;
 
 /**
  * @var View $this
- * @var QuizAddItem $quizAddItem
+ * @var QuizItem $quizAddItem
  * @var array $errors
  */
 

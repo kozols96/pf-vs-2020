@@ -43,4 +43,9 @@ class QuestionRepository
 
         return $question;
     }
+
+    public function updateQuestion(int $id, ?string $title)
+    {
+        return QuestionModel::query()->where('id', '=', $id)->update(['title' => $title]);
+    }
 }

@@ -4,13 +4,13 @@ use Project\Components\Session;
 use Project\Components\View;
 use Project\Models\QuestionModel;
 use Project\Models\QuizModel;
-use Project\Structures\QuestionAddItem;
-use Project\Structures\QuizAddItem;
+use Project\Structures\QuestionItem;
+use Project\Structures\QuizItem;
 use Project\Structures\UserRegisterItem;
 
 /**
  * @var View $this
- * @var QuestionAddItem $questionAddItem
+ * @var QuestionItem $questionAddItem
  * @var QuizModel $quiz
  * @var array $errors
  */
@@ -33,7 +33,7 @@ $this->title = 'Add question';
 
 <form action="/admin/add/question?id=<?=$quiz->id?>" method="post">
     <div class="form-group">
-        <label for="inputName">Name</label>
+        <label for="inputName">Title</label>
         <input type="hidden"
                name="csrf"
         value="<?=e(Session::getInstance()->getCsrf())?>">

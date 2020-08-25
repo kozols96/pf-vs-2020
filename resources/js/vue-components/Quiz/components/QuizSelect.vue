@@ -39,7 +39,7 @@ export default {
   }),
   computed: {
     isButtonDisabled() {
-      return this.selectedQuizId < 1 || this.isLoadingl;
+      return this.selectedQuizId < 1 || this.isLoading;
     }
   },
   created() {
